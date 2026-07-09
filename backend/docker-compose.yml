@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: tracker
+      POSTGRES_USER: tracker
+      POSTGRES_PASSWORD: tracker_dev_password
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U tracker']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://tracker:tracker_dev_password@postgres:5432/tracker
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-dev-only-change-me-dev-only-change-me}
+      STORAGE_SIGNING_SECRET: ${STORAGE_SIGNING_SECRET:-dev-only-change-me-dev-only-change-me}
+      SCREENSHOT_STORAGE_DIR: /app/data/screenshots
+      SCREENSHOT_RETENTION_DAYS: ${SCREENSHOT_RETENTION_DAYS:-7}
+      PUBLIC_API_URL: http://localhost:3000
+      CORS_ORIGIN: http://localhost:5173
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - screenshot_data:/app/data/screenshots
+
+volumes:
+  postgres_data:
+  screenshot_data:
