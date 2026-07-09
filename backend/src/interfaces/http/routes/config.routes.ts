@@ -21,6 +21,7 @@ export async function configRoutes(fastify: FastifyInstance, opts: { container: 
     controller.getDeviceConfig
   );
 
+  fastify.get('/config/global', { preHandler: [requireAdmin, requireRole('viewer')] }, controller.getGlobal);
   fastify.put(
     '/config/global',
     { schema: updateGlobalConfigSchema, preHandler: [requireAdmin, requireRole('admin')] },

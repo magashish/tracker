@@ -4,6 +4,10 @@ import { EffectiveConfig } from '../../domain/entities/configuration';
 export class ManageConfigurationService {
   constructor(private readonly configuration: ConfigurationRepository) {}
 
+  getGlobal(): Promise<EffectiveConfig> {
+    return this.configuration.getGlobal();
+  }
+
   updateGlobal(config: Partial<EffectiveConfig>, adminId: string): Promise<EffectiveConfig> {
     return this.configuration.updateGlobal(config, adminId);
   }

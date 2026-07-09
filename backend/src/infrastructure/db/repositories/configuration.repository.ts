@@ -56,6 +56,15 @@ export class PostgresConfigurationRepository implements ConfigurationRepository 
     return global.rows[0] ? toEffectiveConfig(global.rows[0]) : DEFAULT_CONFIG;
   }
 
+  async getGlobal(): Promise<EffectiveConfig> {
+    const cols =
+      'heartbeat_interval_seconds, screenshot_interval_seconds, screenshot_quality, idle_threshold_seconds, api_url';
+    const { rows } = await this.pool.query<ConfigRow>(
+      `SELECT ${cols} FROM configurations WHERE scope_employee_id IS NULL AND scope_device_id IS NULL`
+    );
+    return rows[0] ? toEffectiveConfig(rows[0]) : DEFAULT_CONFIG;
+  }
+
   async updateGlobal(config: Partial<EffectiveConfig>, updatedByAdminId: string): Promise<EffectiveConfig> {
     const { rows } = await this.pool.query<ConfigRow>(
       `INSERT INTO configurations (heartbeat_interval_seconds, screenshot_interval_seconds, screenshot_quality, idle_threshold_seconds, api_url, updated_by_admin_id)

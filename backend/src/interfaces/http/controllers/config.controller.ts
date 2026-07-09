@@ -17,6 +17,11 @@ export function buildConfigController(container: Container) {
       reply.send({ data: config });
     },
 
+    async getGlobal(_request: FastifyRequest, reply: FastifyReply) {
+      const config = await container.config.manageConfiguration.getGlobal();
+      reply.send({ data: config });
+    },
+
     async updateGlobal(request: FastifyRequest, reply: FastifyReply) {
       const adminId = request.principal!.sub;
       const body = request.body as Partial<EffectiveConfig>;
