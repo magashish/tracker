@@ -1,0 +1,10 @@
+Package: tracker-agent
+Version: 0.1.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Depends: xdotool, x11-utils, imagemagick, xprintidle
+Maintainer: Tracker <support@tracker.example.com>
+Description: Tracker employee monitoring desktop agent
+ Background service that tracks activity, idle time, and periodic
+ screenshots, reporting to the Tracker backend API.

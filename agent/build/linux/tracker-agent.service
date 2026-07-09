@@ -1,0 +1,14 @@
+[Unit]
+Description=Tracker Employee Monitoring Agent
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/share/tracker-agent/current
+Restart=on-failure
+RestartSec=5
+# Needs the logged-in user's X11/D-Bus session for window/idle/screenshot
+# access, so this is a *user* unit (systemctl --user), not a system daemon.
+
+[Install]
+WantedBy=graphical-session.target

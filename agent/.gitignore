@@ -1,0 +1,4 @@
+/tracker-agent
+/tracker-agent.exe
+*.db
+data/
